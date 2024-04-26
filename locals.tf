@@ -1,6 +1,7 @@
 locals {
-  location      = "francecentral"
-  address_space = "172.25.14.0/24"
+  location                    = "francecentral"
+  address_space               = "172.25.14.0/24"
+  github_runner_address_space = "10.58.0.0/19"
   vm_to_deploy = [
     {
       name       = "st1"

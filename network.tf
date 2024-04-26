@@ -55,3 +55,18 @@ resource "azurerm_network_security_rule" "allow_eastwest" {
   source_address_prefixes      = [local.address_space]
 
 }
+
+resource "azurerm_network_security_rule" "allow_ghrunners" {
+  access                       = "Allow"
+  direction                    = "Inbound"
+  name                         = "AllowGithubRunners"
+  network_security_group_name  = azurerm_network_security_group.main.name
+  priority                     = 102
+  protocol                     = "Tcp"
+  resource_group_name          = azurerm_resource_group.main.name
+  destination_address_prefixes = [local.github_runner_address_space]
+  destination_port_range       = "*"
+  source_port_range            = "*"
+  source_address_prefixes      = [local.github_runner_address_space]
+
+}
