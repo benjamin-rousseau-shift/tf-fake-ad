@@ -27,16 +27,17 @@ data "http" "myip" {
 }
 
 resource "azurerm_network_security_rule" "allow_myself" {
-  access                       = "Allow"
-  direction                    = "Inbound"
-  name                         = "AllowMyself"
-  network_security_group_name  = azurerm_network_security_group.main.name
-  priority                     = 100
-  protocol                     = "Tcp"
-  resource_group_name          = azurerm_resource_group.main.name
-  destination_address_prefixes = ["*"]
-  destination_port_ranges      = ["*"]
-  source_address_prefix        = chomp(data.http.myip.response_body)
+  access                      = "Allow"
+  direction                   = "Inbound"
+  name                        = "AllowMyself"
+  network_security_group_name = azurerm_network_security_group.main.name
+  priority                    = 100
+  protocol                    = "Tcp"
+  resource_group_name         = azurerm_resource_group.main.name
+  destination_address_prefix  = "*"
+  destination_port_range      = "*"
+  source_port_range           = "*"
+  source_address_prefix       = chomp(data.http.myip.response_body)
 
 }
 
@@ -45,11 +46,12 @@ resource "azurerm_network_security_rule" "allow_eastwest" {
   direction                    = "Inbound"
   name                         = "AllowEastWest"
   network_security_group_name  = azurerm_network_security_group.main.name
-  priority                     = 100
+  priority                     = 101
   protocol                     = "Tcp"
   resource_group_name          = azurerm_resource_group.main.name
   destination_address_prefixes = [local.address_space]
-  destination_port_ranges      = ["*"]
+  destination_port_range       = "*"
+  source_port_range            = "*"
   source_address_prefixes      = [local.address_space]
 
 }
