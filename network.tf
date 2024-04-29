@@ -91,8 +91,8 @@ resource "azurerm_virtual_network_gateway" "main" {
   name                = "sh-az-fake-ad-vgw"
   resource_group_name = azurerm_resource_group.main.name
   sku                 = "VpnGw1"
-  type                = "RouteBased"
-  vpn_type            = "Vpn"
+  type                = "Vpn"
+  vpn_type            = "RouteBased"
   ip_configuration {
     public_ip_address_id = azurerm_public_ip.vgw.id
     subnet_id            = azurerm_subnet.vgw.id
