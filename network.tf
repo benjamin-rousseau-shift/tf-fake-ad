@@ -31,7 +31,7 @@ resource "azurerm_network_security_group" "main" {
 
 resource "azurerm_subnet_network_security_group_association" "main" {
   network_security_group_id = azurerm_network_security_group.main.id
-  subnet_id                 = azurerm_sbnet.main.id
+  subnet_id                 = azurerm_subnet.main.id
 
 }
 
