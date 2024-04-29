@@ -1,8 +1,15 @@
+module "referential" {
+  source = "git::https://github.com/shift-technology/tf-referential.git?ref=main"
+
+}
+
 locals {
   location                    = "francecentral"
   address_space               = "172.25.14.0/24"
   vgw_address_space           = "172.25.15.0/24"
-  github_runner_address_space = "10.58.0.0/19"
+  github_runner_address_space = ["10.58.0.0/19"]
+  prisma_vpn_public_ips       = module.referential.prisma_vpn_ips
+  prims_vpn_private_ips       = module.referential.address_prefixes.vpn.address_spaces
   vm_to_deploy = [
     {
       name       = "st1"
@@ -86,10 +93,10 @@ variable "ipsec_psk" {
   type      = string
 }
 
-variable "zi_cfr_public_ip" {
+variable "frc1_public_ip" {
   type = string
 }
 
-variable "zi_cfr_address_spaces" {
+variable "frc1_address_spaces" {
   type = list(string)
 }

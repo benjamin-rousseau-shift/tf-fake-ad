@@ -6,6 +6,7 @@ resource "azurerm_public_ip" "vms" {
   location            = local.location
   name                = "sh-az-fake-${each.value.name}-pip"
   resource_group_name = azurerm_resource_group.main.name
+  sku                 = "Standard"
 
 }
 
