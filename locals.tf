@@ -58,6 +58,17 @@ locals {
       ]
     }
   ]
+
+  data_disks_to_deploy = merge(values({
+    for k, v in local.vm_to_deploy : v.name => {
+      for d in v.data_disks : "${v.name}-${d.letter}" => {
+        hostname = v.name
+        letter   = d.letter
+        lun      = d.lun
+        size     = d.size
+      }
+    }
+  })...)
 }
 
 

@@ -52,3 +52,23 @@ resource "azurerm_windows_virtual_machine" "vms" {
   }
   computer_name = "sh-az-fake-${each.value.name}"
 }
+
+resource "azurerm_managed_disk" "vms" {
+  for_each             = local.data_disks_to_deploy
+  create_option        = "Empty"
+  location             = local.location
+  name                 = "sh-az-fake-${each.value.hostname}-${each.value.letter}"
+  resource_group_name  = azurerm_resource_group.main.name
+  storage_account_type = "Standard_LRS"
+  disk_size_gb         = each.value.size
+
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "vms" {
+  for_each           = local.data_disks_to_deploy
+  caching            = "None"
+  lun                = each.value.lun
+  managed_disk_id    = azurerm_managed_disk.vms["${each.value.hostname}-${each.value.letter}"].id
+  virtual_machine_id = azurerm_windows_virtual_machine.vms[each.value.hostname].id
+
+}
