@@ -47,12 +47,12 @@ locals {
         },
         {
           letter = "F"
-          lun    = 0
+          lun    = 1
           size   = 100
         },
         {
           letter = "G"
-          lun    = 0
+          lun    = 2
           size   = 100
         }
       ]
