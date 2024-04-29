@@ -1,6 +1,7 @@
 locals {
   location                    = "francecentral"
   address_space               = "172.25.14.0/24"
+  vgw_address_space           = "172.25.15.0/24"
   github_runner_address_space = "10.58.0.0/19"
   vm_to_deploy = [
     {
@@ -79,4 +80,16 @@ variable "admin_password" {
 
 variable "admin_username" {
   type = string
+}
+variable "ipsec_psk" {
+  sensitive = true
+  type      = string
+}
+
+variable "zi_cfr_public_ip" {
+  type = string
+}
+
+variable "zi_cfr_address_spaces" {
+  type = list(string)
 }

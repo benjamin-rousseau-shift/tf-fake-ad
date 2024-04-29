@@ -1,6 +1,6 @@
 
 resource "azurerm_virtual_network" "main" {
-  address_space       = [local.address_space]
+  address_space       = [local.address_space, local.vgw_address_space]
   location            = local.location
   name                = "vnet-terraform-fake-ad"
   resource_group_name = azurerm_resource_group.main.name
@@ -13,6 +13,13 @@ resource "azurerm_subnet" "main" {
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
 
+}
+
+resource "azurerm_subnet" "vgw" {
+  address_prefixes     = [local.vgw_address_space]
+  name                 = "GatewaySubnet"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
 }
 
 resource "azurerm_network_security_group" "main" {
@@ -68,5 +75,57 @@ resource "azurerm_network_security_rule" "allow_ghrunners" {
   destination_port_range       = "*"
   source_port_range            = "*"
   source_address_prefixes      = [local.github_runner_address_space]
+
+}
+
+resource "azurerm_public_ip" "vgw" {
+  allocation_method   = "Static"
+  location            = local.address_space
+  name                = "sh-az-fake-ad-vpn-ip"
+  resource_group_name = azurerm_resource_group.main.name
+
+}
+
+resource "azurerm_virtual_network_gateway" "main" {
+  location            = local.location
+  name                = "sh-az-fake-ad-vgw"
+  resource_group_name = azurerm_resource_group.main.name
+  sku                 = "VpnGw1"
+  type                = "RouteBased"
+  vpn_type            = "Vpn"
+  ip_configuration {
+    public_ip_address_id = azurerm_public_ip.vgw.id
+    subnet_id            = azurerm_subnet.vgw.id
+  }
+
+}
+
+resource "azurerm_virtual_network_gateway_connection" "zi_cfr" {
+  location                   = local.address_space
+  name                       = "fake-ad-to-zi-cfr"
+  resource_group_name        = azurerm_resource_group.main.name
+  type                       = "IPsec"
+  virtual_network_gateway_id = azurerm_virtual_network_gateway.main.id
+  local_network_gateway_id   = azurerm_local_network_gateway.zi_cfr.id
+  shared_key                 = var.ipsec_psk
+  dpd_timeout_seconds        = 45
+  ipsec_policy {
+    dh_group         = "DHGroup2"
+    ike_encryption   = "AES256"
+    ike_integrity    = "SHA256"
+    ipsec_encryption = "AES256"
+    ipsec_integrity  = "SHA256"
+    pfs_group        = "PFS2"
+    sa_lifetime      = 3600
+  }
+  use_policy_based_traffic_selectors = false
+}
+
+resource "azurerm_local_network_gateway" "zi_cfr" {
+  name                = "zi-cfr"
+  location            = local.location
+  resource_group_name = azurerm_resource_group.main.name
+  gateway_address     = var.zi_cfr_public_ip
+  address_space       = var.zi_cfr_address_spaces
 
 }
