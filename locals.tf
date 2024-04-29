@@ -10,7 +10,7 @@ locals {
         {
           letter = "E"
           lun    = 0
-          size   = 100
+          size   = 128
         }
       ]
     },
@@ -21,7 +21,7 @@ locals {
         {
           letter = "E"
           lun    = 0
-          size   = 100
+          size   = 128
         }
       ]
     },
@@ -32,7 +32,7 @@ locals {
         {
           letter = "E"
           lun    = 0
-          size   = 100
+          size   = 128
         }
       ]
     },
@@ -43,17 +43,17 @@ locals {
         {
           letter = "E"
           lun    = 0
-          size   = 100
+          size   = 128
         },
         {
           letter = "F"
           lun    = 1
-          size   = 100
+          size   = 128
         },
         {
           letter = "G"
           lun    = 2
-          size   = 100
+          size   = 128
         }
       ]
     }
