@@ -1,5 +1,5 @@
 resource "azurerm_public_ip" "ad" {
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
   location            = local.location
   name                = "sh-az-fake-ad1-pip"
   resource_group_name = azurerm_resource_group.main.name

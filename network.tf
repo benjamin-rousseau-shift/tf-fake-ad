@@ -39,18 +39,18 @@ data "http" "myip" {
   url = "https://ipv4.icanhazip.com"
 }
 
-resource "azurerm_network_security_rule" "allow_myself" {
+resource "azurerm_network_security_rule" "allow_vpn" {
   access                       = "Allow"
   direction                    = "Inbound"
-  name                         = "AllowMyself"
+  name                         = "AllowVPN"
   network_security_group_name  = azurerm_network_security_group.main.name
   priority                     = 100
   protocol                     = "Tcp"
   resource_group_name          = azurerm_resource_group.main.name
   destination_address_prefixes = [local.address_space]
-  destination_port_range       = "*"
+  destination_port_ranges      = ["3389", "443", "22"]
   source_port_range            = "*"
-  source_address_prefixes      = distinct(concat(local.prisma_vpn_public_ips, ["${chomp(data.http.myip.body)}"], local.prims_vpn_private_ips))
+  source_address_prefixes      = distinct(concat(local.prisma_vpn_public_ips, ["${chomp(data.http.myip.response_body)}"], local.prims_vpn_private_ips))
 
 }
 
@@ -77,8 +77,8 @@ resource "azurerm_network_security_rule" "allow_ghrunners" {
   priority                     = 102
   protocol                     = "Tcp"
   resource_group_name          = azurerm_resource_group.main.name
-  destination_address_prefixes = local.github_runner_address_space
-  destination_port_range       = "*"
+  destination_address_prefixes = [local.address_space]
+  destination_port_ranges      = ["5985", "5986"]
   source_port_range            = "*"
   source_address_prefixes      = local.github_runner_address_space
 
@@ -143,6 +143,23 @@ resource "azurerm_network_security_rule" "allow_prometheus" {
   source_address_prefixes      = ["10.61.5.8/32"]
 
 }
+
+resource "azurerm_network_security_rule" "allow_kerberos" {
+  access                       = "Allow"
+  direction                    = "Inbound"
+  name                         = "AllowKerberos"
+  network_security_group_name  = azurerm_network_security_group.main.name
+  priority                     = 107
+  protocol                     = "Tcp"
+  resource_group_name          = azurerm_resource_group.main.name
+  destination_address_prefixes = [local.address_space]
+  destination_port_ranges      = ["88"]
+  source_port_range            = "*"
+  source_address_prefixes      = local.github_runner_address_space
+
+}
+
+
 
 resource "azurerm_public_ip" "vgw" {
   allocation_method   = "Static"

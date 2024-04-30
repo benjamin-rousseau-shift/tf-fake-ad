@@ -2,7 +2,7 @@ resource "azurerm_public_ip" "vms" {
   for_each = {
     for k, v in local.vm_to_deploy : v.name => v
   }
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
   location            = local.location
   name                = "sh-az-fake-${each.value.name}-pip"
   resource_group_name = azurerm_resource_group.main.name
