@@ -7,6 +7,7 @@ locals {
   location                    = "francecentral"
   address_space               = "172.25.14.0/24"
   vgw_address_space           = "172.25.15.0/24"
+  translated_address          = "10.19.11.11/32"
   github_runner_address_space = ["10.58.0.0/19"]
   prisma_vpn_public_ips       = module.referential.prisma_vpn_ips
   prims_vpn_private_ips       = module.referential.address_prefixes.vpn.address_spaces

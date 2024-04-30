@@ -80,7 +80,7 @@ resource "azurerm_network_security_rule" "allow_ghrunners" {
   destination_address_prefixes = [local.address_space]
   destination_port_ranges      = ["5985", "5986"]
   source_port_range            = "*"
-  source_address_prefixes      = local.github_runner_address_space
+  source_address_prefixes      = concat(local.github_runner_address_space)
 
 }
 
@@ -155,7 +155,7 @@ resource "azurerm_network_security_rule" "allow_kerberos" {
   destination_address_prefixes = [local.address_space]
   destination_port_ranges      = ["88"]
   source_port_range            = "*"
-  source_address_prefixes      = local.github_runner_address_space
+  source_address_prefixes      = concat(local.github_runner_address_space)
 
 }
 
