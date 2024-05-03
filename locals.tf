@@ -11,6 +11,7 @@ locals {
   github_runner_address_space = ["10.58.0.0/19"]
   prisma_vpn_public_ips       = module.referential.prisma_vpn_ips
   prims_vpn_private_ips       = module.referential.address_prefixes.vpn.address_spaces
+  sftp_accounts               = ["dart-prod-upload", "dart-prod-download", "dart-preprod-upload", "dart-preprod-download"]
   vm_to_deploy = [
     {
       name       = "st1"
@@ -33,6 +34,11 @@ locals {
           size   = 128
         }
       ]
+    },
+    {
+      name       = "ws1"
+      hostnumber = 9
+      data_disks = []
     },
     {
       name       = "el1"
@@ -100,4 +106,14 @@ variable "frc1_public_ip" {
 
 variable "frc1_address_spaces" {
   type = list(string)
+}
+
+variable "tenant_id" {
+  type        = string
+  description = "The tenant ID for the Azure Key Vault"
+}
+
+variable "pipeline_principal_id" {
+  type        = string
+  description = "The principal ID for the Azure Key Vault"
 }

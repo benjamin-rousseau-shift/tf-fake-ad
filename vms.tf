@@ -40,7 +40,7 @@ resource "azurerm_windows_virtual_machine" "vms" {
   name                  = "sh-az-fake-${each.value.name}"
   network_interface_ids = [azurerm_network_interface.vms[each.key].id]
   resource_group_name   = azurerm_resource_group.main.name
-  size                  = "Standard_D2as_v4"
+  size                  = each.value.name == "el1" ? "Standard_D4as_v4" : "Standard_D2as_v4"
   os_disk {
     caching              = "None"
     storage_account_type = "Standard_LRS"
